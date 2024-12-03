@@ -9,18 +9,22 @@ public class Customer implements Runnable{
     @Override
     public void run() {
         TicketPool ticketPool = new TicketPool(configuration.getTotalNumberOfTickets(), configuration.getMaxTicketCapacity());
-        int i=0;
+        int i=1;
         while (true){
+            if(TicketPool.ticketPool.isEmpty()){
+                break;
+            }
         if(i%configuration.getTicketsRetrievalRate()==0){
             try {
-                Thread.sleep(120);
+                Thread.sleep(4000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
-
             }
         }
-        ticketPool.removeTicket(TicketPool.ticketPool.removeFirst());
+       // System.out.println("Ticket Id "+TicketPool.ticketPool.getFirst().getTicketId() + " removed from TicketPool");
+        ticketPool.removeTicket(TicketPool.ticketPool.getFirst());
         i++;
+
 }
     }
 }

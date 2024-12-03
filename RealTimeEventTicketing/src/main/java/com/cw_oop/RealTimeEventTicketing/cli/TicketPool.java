@@ -28,5 +28,6 @@ public class TicketPool {
     }
     public synchronized void removeTicket(Ticket ticket) {
         ticketPool.remove(ticket);
+        System.out.println("Ticket removed from pool ,Ticket Id :" + ticket.getTicketId());
     }
 }

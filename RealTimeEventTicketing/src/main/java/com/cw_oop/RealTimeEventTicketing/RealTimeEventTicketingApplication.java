@@ -6,6 +6,9 @@ import com.cw_oop.RealTimeEventTicketing.cli.Vendor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Scanner;
 
 @SpringBootApplication
@@ -32,7 +35,9 @@ public class RealTimeEventTicketingApplication {
 
         Configuration config = new Configuration(totalTickets, releaseRate, retrievalRate, maxCapacity);
         Scanner scanner1 = new Scanner(System.in);
-
+        List<Vendor> vendors = new ArrayList<Vendor>();
+        List<Customer> customers = new ArrayList<Customer>();
+        int i=1;
         while (true) {
             System.out.println("Enter 'start' to start the tickets selling:");
             String command = scanner1.nextLine();
@@ -48,21 +53,28 @@ public class RealTimeEventTicketingApplication {
                         System.out.println("Enter stop to stop selling tickets:");
                     }
                     Vendor vendor = new Vendor(config);
-                    vendor.run();
+                    vendor.setVendorId(i);
+                    vendors.add(vendor);
 
                     Customer customer = new Customer(config);
-                    customer.run();
+                    customers.add(customer);
 
                     if (!vendor.checkRunning()) {
                         return;
                     }
+                    i++;
                 }
                 break;
             } else {
                 System.out.println("Invalid command. Enter 'start' to begin:");
             }
+
         }
         scanner.close();
+
+        for (Vendor vendor : vendors) {
+            vendor.run();
+        }
         SpringApplication.run(RealTimeEventTicketingApplication.class, args);
     }
 
