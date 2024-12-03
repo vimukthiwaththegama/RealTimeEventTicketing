@@ -57,10 +57,11 @@ public class RealTimeEventTicketingApplication {
                     vendors.add(vendor);
 
                     Customer customer = new Customer(config);
+                    customer.setCustomerId(i);
                     customers.add(customer);
 
                     if (!vendor.checkRunning()) {
-                        return;
+                        break;
                     }
                     i++;
                 }
@@ -71,9 +72,12 @@ public class RealTimeEventTicketingApplication {
 
         }
         scanner.close();
+        System.out.println("test");
 
         for (Vendor vendor : vendors) {
             vendor.run();
+        }for (Customer customer : customers) {
+            customer.run();
         }
         SpringApplication.run(RealTimeEventTicketingApplication.class, args);
     }

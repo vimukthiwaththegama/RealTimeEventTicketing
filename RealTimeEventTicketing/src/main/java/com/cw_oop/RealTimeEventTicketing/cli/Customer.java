@@ -2,6 +2,15 @@ package com.cw_oop.RealTimeEventTicketing.cli;
 
 public class Customer implements Runnable{
     Configuration configuration;
+    private Integer customerId;
+
+    public Integer getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Integer customerId) {
+        this.customerId = customerId;
+    }
 
     public Customer(Configuration configuration){
         this.configuration = configuration;
