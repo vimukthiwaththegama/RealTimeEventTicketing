@@ -8,6 +8,6 @@ public class Ticket {
     }
 
     public void setTicketId(Integer ticketId) {
-        this.ticketId += ticketId;
+        Ticket.ticketId += ticketId;
     }
 }

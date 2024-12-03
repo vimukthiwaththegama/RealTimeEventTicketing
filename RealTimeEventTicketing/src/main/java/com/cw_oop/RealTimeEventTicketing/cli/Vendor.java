@@ -2,11 +2,16 @@ package com.cw_oop.RealTimeEventTicketing.cli;
 
 public class Vendor implements Runnable {
     Configuration configuration;
+
     public Vendor(Configuration configuration) {
         this.configuration = configuration;
     }
+
+    private boolean isRunning;
+
     @Override
     public void run() {
+        isRunning = true;
         try {
             TicketPool ticketPool = new TicketPool(configuration.getTotalNumberOfTickets(), configuration.getMaxTicketCapacity());
             int i=0;
@@ -20,11 +25,18 @@ public class Vendor implements Runnable {
                 }
                 Ticket ticket = new Ticket();
                 ticket.setTicketId(ticket.getTicketId());
-                ticketPool.addTicket(ticket);
+                if(!ticketPool.addTicket(ticket)){
+                    isRunning = false;
+                    return;
+                }
                 i++;
             }
         }catch (Exception e) {
             //e.printStackTrace();
         }
+    }
+
+    public boolean checkRunning() {
+        return isRunning;
     }
 }
