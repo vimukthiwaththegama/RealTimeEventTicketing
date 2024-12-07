@@ -2,6 +2,7 @@ package com.cw_oop.RealTimeEventTicketing;
 
 import com.cw_oop.RealTimeEventTicketing.cli.Configuration;
 import com.cw_oop.RealTimeEventTicketing.cli.Customer;
+import com.cw_oop.RealTimeEventTicketing.cli.TicketPool;
 import com.cw_oop.RealTimeEventTicketing.cli.Vendor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,73 +14,71 @@ import java.util.Scanner;
 
 @SpringBootApplication
 public class RealTimeEventTicketingApplication {
-
     public static void main(String[] args) {
-        int totalTickets;
-        int releaseRate;
-        int retrievalRate;
-        int maxCapacity;
-
         Scanner scanner = new Scanner(System.in);
+
         System.out.println("Enter Total Number of Tickets:");
-        totalTickets = scanner.nextInt();
+        int totalTickets = scanner.nextInt();
 
         System.out.println("Enter Ticket Release Rate:");
-        releaseRate = scanner.nextInt();
+        int releaseRate = scanner.nextInt();
 
         System.out.println("Enter Ticket Retrieval Rate:");
-        retrievalRate = scanner.nextInt();
+        int retrievalRate = scanner.nextInt();
 
         System.out.println("Enter Max Capacity:");
-        maxCapacity = scanner.nextInt();
+        int maxCapacity = scanner.nextInt();
+
+        System.out.println("Enter Number of Vendors:");
+        int numberOfVendors = scanner.nextInt();
+
+        System.out.println("Enter Number of Customers:");
+        int numberOfCustomers = scanner.nextInt();
 
         Configuration config = new Configuration(totalTickets, releaseRate, retrievalRate, maxCapacity);
-        Scanner scanner1 = new Scanner(System.in);
-        List<Vendor> vendors = new ArrayList<Vendor>();
-        List<Customer> customers = new ArrayList<Customer>();
-        int i=1;
-        while (true) {
-            System.out.println("Enter 'start' to start the tickets selling:");
-            String command = scanner1.nextLine();
 
-            if (command.equals("start")) {
-                System.out.println("Ticket selling started. Enter 'stop' to stop selling tickets:");
-                while (true) {
-                    command = scanner.nextLine();
-                    if (command.equals("stop")) {
-                        System.out.println("Ticket selling stopped.");
-                        break;
-                    } else {
-                        System.out.println("Enter stop to stop selling tickets:");
-                    }
-                    Vendor vendor = new Vendor(config);
-                    vendor.setVendorId(i);
-                    vendors.add(vendor);
+        TicketPool ticketPool = new TicketPool(totalTickets, maxCapacity);
 
-                    Customer customer = new Customer(config);
-                    customer.setCustomerId(i);
-                    customers.add(customer);
+        List<Thread> vendorThreads = new ArrayList<>();
+        List<Thread> customerThreads = new ArrayList<>();
 
-                    if (!vendor.checkRunning()) {
-                        break;
-                    }
-                    i++;
-                }
-                break;
-            } else {
-                System.out.println("Invalid command. Enter 'start' to begin:");
+        // Create and start vendor threads
+        for (int i = 1; i <= numberOfVendors; i++) {
+            Vendor vendor = new Vendor(config);
+            vendor.setVendorId(i);
+            Thread thread = new Thread(vendor);
+            vendorThreads.add(thread);
+            thread.start();
+        }
+
+        // Create and start customer threads
+        for (int i = 1; i <= numberOfCustomers; i++) {
+            Customer customer = new Customer(config);
+            customer.setCustomerId(i);
+            Thread thread = new Thread(customer);
+            customerThreads.add(thread);
+            thread.start();
+        }
+
+        // Wait for threads to finish
+        for (Thread thread : vendorThreads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                System.out.println("Vendor thread interrupted: " + e.getMessage());
             }
-
         }
-        scanner.close();
-        System.out.println("test");
-
-        for (Vendor vendor : vendors) {
-            vendor.run();
-        }for (Customer customer : customers) {
-            customer.run();
+        for (Thread thread : customerThreads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                System.out.println("Customer thread interrupted: " + e.getMessage());
+            }
         }
+
+        System.out.println("Simulation complete!");
         SpringApplication.run(RealTimeEventTicketingApplication.class, args);
     }
+
 
 }

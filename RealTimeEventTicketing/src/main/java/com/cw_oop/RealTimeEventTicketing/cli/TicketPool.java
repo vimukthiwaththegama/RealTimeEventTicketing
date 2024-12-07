@@ -1,14 +1,14 @@
 package com.cw_oop.RealTimeEventTicketing.cli;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class TicketPool {
     private static Integer totalNumberOfTickets;
     private static Integer maxTicketCapacity;
+    private static final Logger logger = Logger.getLogger(TicketPool.class.getName());
 
     public TicketPool(Integer totalNumberOfTickets, Integer maxTicketCapacity) {
         TicketPool.totalNumberOfTickets = totalNumberOfTickets;
@@ -18,16 +18,18 @@ public class TicketPool {
     public static List<Ticket> ticketPool = Collections.synchronizedList(new ArrayList<Ticket>());
 
     public synchronized Boolean addTicket(Ticket ticket) {
-        if(ticketPool.size() >= maxTicketCapacity || ticketPool.size() >= totalNumberOfTickets) {
-            System.out.println("Ticket pool is full " + ticketPool.size());
+        if (ticketPool.size() >= maxTicketCapacity || ticketPool.size() >= totalNumberOfTickets) {
+            logger.info("Ticket pool is full " + ticketPool.size());
             return false;
-        }else {
+        } else {
             ticketPool.add(ticket);
+            logger.info("Ticket added: Ticket ID " + ticket.getTicketId());
             return true;
         }
     }
+
     public synchronized void removeTicket(Ticket ticket) {
         ticketPool.remove(ticket);
-        System.out.println("Ticket removed from pool ,Ticket Id :" + ticket.getTicketId());
+        logger.info("Ticket removed: Ticket ID " + ticket.getTicketId());
     }
 }
