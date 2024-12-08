@@ -1,5 +1,7 @@
 package com.cw_oop.RealTimeEventTicketing.cli;
 
+import java.util.logging.Logger;
+
 public class Vendor implements Runnable {
     Configuration configuration;
     private Integer vendorId;
@@ -11,7 +13,7 @@ public class Vendor implements Runnable {
     public void setVendorId(Integer vendorId) {
         this.vendorId = vendorId;
     }
-
+    private static final Logger logger = Logger.getLogger(TicketPool.class.getName());
     public Vendor(Configuration configuration) {
         this.configuration = configuration;
     }
@@ -35,7 +37,7 @@ public class Vendor implements Runnable {
             if (!ticketPool.addTicket(ticket)) {
                 return; // Stop if the pool is full
             }
-            System.out.println("Vendor " + vendorId + " released Ticket ID: " + ticket.getTicketId());
+            logger.info("Vendor " + vendorId + " released Ticket ID: " + ticket.getTicketId());
             i++;
         }
     }

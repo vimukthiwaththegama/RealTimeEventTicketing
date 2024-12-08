@@ -19,17 +19,17 @@ public class TicketPool {
 
     public synchronized Boolean addTicket(Ticket ticket) {
         if (ticketPool.size() >= maxTicketCapacity || ticketPool.size() >= totalNumberOfTickets) {
-            logger.info("Ticket pool is full " + ticketPool.size());
+           // logger.info("Ticket pool is full " + ticketPool.size());
             return false;
         } else {
             ticketPool.add(ticket);
-            logger.info("Ticket added: Ticket ID " + ticket.getTicketId());
+            //logger.info("Ticket added to the ticket pool: Ticket ID " + ticket.getTicketId());
             return true;
         }
     }
 
     public synchronized void removeTicket(Ticket ticket) {
         ticketPool.remove(ticket);
-        logger.info("Ticket removed: Ticket ID " + ticket.getTicketId());
+        //logger.info("Ticket removed from ticket pool: Ticket ID " + ticket.getTicketId());
     }
 }

@@ -1,5 +1,7 @@
 package com.cw_oop.RealTimeEventTicketing.cli;
 
+import java.util.logging.Logger;
+
 public class Customer implements Runnable{
     Configuration configuration;
     private Integer customerId;
@@ -15,14 +17,12 @@ public class Customer implements Runnable{
     public Customer(Configuration configuration){
         this.configuration = configuration;
     }
+    private static final Logger logger = Logger.getLogger(TicketPool.class.getName());
     @Override
     public void run() {
         TicketPool ticketPool = new TicketPool(configuration.getTotalNumberOfTickets(), configuration.getMaxTicketCapacity());
-        while (true) {
-            if (TicketPool.ticketPool.isEmpty()) {
-                break;
-            }
-            if (ticketPool.ticketPool.size() % configuration.getTicketsRetrievalRate() == 0) {
+        while (!TicketPool.ticketPool.isEmpty()) {
+            if (TicketPool.ticketPool.size() % configuration.getTicketsRetrievalRate() == 0) {
                 try {
                     Thread.sleep(4000);
                 } catch (InterruptedException e) {
@@ -31,7 +31,8 @@ public class Customer implements Runnable{
             }
             Ticket ticket = TicketPool.ticketPool.get(0); // Get the first ticket
             ticketPool.removeTicket(ticket);
-            System.out.println("Customer " + customerId + " retrieved Ticket ID: " + ticket.getTicketId());
+            logger.info("Customer " + customerId + " retrieved Ticket ID: " + ticket.getTicketId() + " from ticket pool");
+
         }
     }
 
