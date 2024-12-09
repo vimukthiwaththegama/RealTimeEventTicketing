@@ -1,13 +1,14 @@
 package com.cw_oop.RealTimeEventTicketing.cli;
 
 public class Ticket {
-    private static Integer ticketId ;
+    private Integer ticketId;
 
-    public String getTicketId() {
-        return "T" + ticketId;
+    public Integer getTicketId() {
+        return ticketId;
     }
 
     public void setTicketId(Integer ticketId) {
-        Ticket.ticketId = ticketId;
+        this.ticketId = ticketId;
     }
 }
+

@@ -4,38 +4,53 @@ import java.util.LinkedList;
 import java.util.logging.Logger;
 
 public class TicketPool {
-    private static Integer totalNumberOfTickets;
-    private static Integer maxTicketCapacity;
-    private static final Logger logger = Logger.getLogger(TicketPool.class.getName());
+        private static Integer totalNumberOfTickets;
+        private static Integer maxTicketCapacity;
+        private static final Logger logger = Logger.getLogger(TicketPool.class.getName());
+        public static LinkedList<Ticket> ticketPool = new LinkedList<>();
 
-    // Using LinkedList to allow FIFO (First In, First Out) behavior
-    public static LinkedList<Ticket> ticketPool = new LinkedList<>();
+        private Integer ticketCount = 0;
 
-    public TicketPool(Integer totalNumberOfTickets, Integer maxTicketCapacity) {
-        TicketPool.totalNumberOfTickets = totalNumberOfTickets;
-        TicketPool.maxTicketCapacity = maxTicketCapacity;
-    }
+        public TicketPool(Integer totalNumberOfTickets, Integer maxTicketCapacity) {
+            TicketPool.totalNumberOfTickets = totalNumberOfTickets;
+            TicketPool.maxTicketCapacity = maxTicketCapacity;
+        }
 
-    // Thread-safe addition of tickets
-    public synchronized Boolean addTicket(Ticket ticket) {
-        if (ticketPool.size() >= maxTicketCapacity || ticketPool.size() >= totalNumberOfTickets) {
-            logger.info("Ticket pool is full " + ticketPool.size());
+    public synchronized Boolean addTicket(Ticket ticket) throws InterruptedException {
+        while (ticketPool.size() >= maxTicketCapacity) {
+            logger.warning("Ticket pool is full. Vendor waiting...");
+            wait();
+        }
+
+        if (ticketCount >= totalNumberOfTickets) {
+            logger.info("All tickets have been released.");
             return false;
-        } else {
-            ticketPool.add(ticket);
-            logger.info("Ticket added to the ticket pool: Ticket ID " + ticket.getTicketId());
-            return true;
+        }
+
+        ticket.setTicketId(++ticketCount);
+        ticketPool.add(ticket);
+        logger.info("Ticket added to the ticket pool: Ticket ID " + ticket.getTicketId());
+        notifyAll();
+        return true;
+    }
+
+
+        public synchronized Ticket removeTicket() throws InterruptedException {
+            while (ticketPool.isEmpty()) {
+                if (ticketCount >= totalNumberOfTickets) {
+                    logger.info("No more tickets to retrieve. Customer waiting stopped.");
+                    return null;
+                }
+                logger.warning("Ticket pool is empty. Customer waiting...");
+                wait();
+            }
+
+            Ticket ticket = ticketPool.removeFirst();
+            logger.info("Ticket removed from ticket pool: Ticket ID " + ticket.getTicketId());
+            notifyAll();
+            return ticket;
         }
     }
-    // Thread-safe removal of tickets
-    public synchronized Ticket removeTicket() {
-        if (ticketPool.isEmpty()) {
-            logger.warning("Ticket pool is empty");
-            return null;
-        }
-        Ticket ticket = ticketPool.removeFirst();
-        logger.info("Ticket removed from ticket pool: Ticket ID " + ticket.getTicketId());
-        return ticket;
-    }
-}
+
+
 

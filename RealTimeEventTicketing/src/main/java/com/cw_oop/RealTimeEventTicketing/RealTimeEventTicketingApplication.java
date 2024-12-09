@@ -4,6 +4,7 @@ import com.cw_oop.RealTimeEventTicketing.cli.Configuration;
 import com.cw_oop.RealTimeEventTicketing.cli.Customer;
 import com.cw_oop.RealTimeEventTicketing.cli.TicketPool;
 import com.cw_oop.RealTimeEventTicketing.cli.Vendor;
+import org.springframework.boot.SpringApplication;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,6 @@ public class RealTimeEventTicketingApplication {
         List<Thread> vendorThreads = new ArrayList<>();
         List<Thread> customerThreads = new ArrayList<>();
 
-        // Create and start vendor threads
         for (int i = 1; i <= numberOfVendors; i++) {
             Vendor vendor = new Vendor(config, ticketPool);
             vendor.setVendorId(i);
@@ -46,7 +46,6 @@ public class RealTimeEventTicketingApplication {
             thread.start();
         }
 
-        // Create and start customer threads
         for (int i = 1; i <= numberOfCustomers; i++) {
             Customer customer = new Customer(config, ticketPool);
             customer.setCustomerId(i);
@@ -55,7 +54,6 @@ public class RealTimeEventTicketingApplication {
             thread.start();
         }
 
-        // Wait for vendor threads to complete
         for (Thread thread : vendorThreads) {
             try {
                 thread.join();
@@ -64,7 +62,6 @@ public class RealTimeEventTicketingApplication {
             }
         }
 
-        // Wait for customer threads to complete
         for (Thread thread : customerThreads) {
             try {
                 thread.join();
@@ -74,5 +71,7 @@ public class RealTimeEventTicketingApplication {
         }
 
         System.out.println("Simulation complete!");
+        SpringApplication.run(RealTimeEventTicketingApplication.class, args);
+
     }
 }

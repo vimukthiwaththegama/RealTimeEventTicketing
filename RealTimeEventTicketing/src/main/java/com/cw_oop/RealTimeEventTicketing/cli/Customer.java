@@ -20,20 +20,24 @@ public class Customer implements Runnable {
     @Override
     public void run() {
         while (true) {
-            Ticket ticket = ticketPool.removeTicket();
+            Ticket ticket = null;
+            try {
+                ticket = ticketPool.removeTicket();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             if (ticket == null) {
-                logger.info("Customer " + customerId + " stopped as the ticket pool is empty");
+                logger.info("Customer " + customerId + " stopped as there are no more tickets.");
                 break;
             }
             logger.info("Customer " + customerId + " retrieved Ticket ID: " + ticket.getTicketId());
-
-            // Respecting ticket retrieval rate
             try {
-                Thread.sleep(60000 / configuration.getTicketsRetrievalRate());
+                Thread.sleep(15000 / configuration.getTicketsRetrievalRate());
             } catch (InterruptedException e) {
                 logger.severe("Customer " + customerId + " interrupted: " + e.getMessage());
                 Thread.currentThread().interrupt();
             }
         }
     }
+
 }

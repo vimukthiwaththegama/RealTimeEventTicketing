@@ -20,26 +20,27 @@ public class Vendor implements Runnable {
 
     @Override
     public void run() {
-        int ticketId = 1;
         while (true) {
             Ticket ticket = new Ticket();
-            ticket.setTicketId(ticketId);
-            boolean added = ticketPool.addTicket(ticket);
+            boolean added;
+            try {
+                added = ticketPool.addTicket(ticket);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             if (!added) {
-                logger.info("Vendor " + vendorId + " stopped as the ticket pool is full");
+                logger.info("Vendor " + vendorId + " stopped as all tickets have been released.");
                 break;
             }
             logger.info("Vendor " + vendorId + " released Ticket ID: " + ticket.getTicketId());
 
-            ticketId++;
-
-            // Respecting ticket release rate
             try {
-                Thread.sleep(60000 / configuration.getTicketsReleaseRate());
+                Thread.sleep(15000 / configuration.getTicketsReleaseRate());
             } catch (InterruptedException e) {
                 logger.severe("Vendor " + vendorId + " interrupted: " + e.getMessage());
                 Thread.currentThread().interrupt();
             }
         }
     }
+
 }
