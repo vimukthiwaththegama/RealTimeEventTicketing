@@ -4,14 +4,10 @@ import com.cw_oop.RealTimeEventTicketing.cli.Configuration;
 import com.cw_oop.RealTimeEventTicketing.cli.Customer;
 import com.cw_oop.RealTimeEventTicketing.cli.TicketPool;
 import com.cw_oop.RealTimeEventTicketing.cli.Vendor;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
-@SpringBootApplication
 public class RealTimeEventTicketingApplication {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -19,10 +15,10 @@ public class RealTimeEventTicketingApplication {
         System.out.println("Enter Total Number of Tickets:");
         int totalTickets = scanner.nextInt();
 
-        System.out.println("Enter Ticket Release Rate:");
+        System.out.println("Enter Ticket Release Rate (tickets per minute):");
         int releaseRate = scanner.nextInt();
 
-        System.out.println("Enter Ticket Retrieval Rate:");
+        System.out.println("Enter Ticket Retrieval Rate (tickets per minute):");
         int retrievalRate = scanner.nextInt();
 
         System.out.println("Enter Max Capacity:");
@@ -43,7 +39,7 @@ public class RealTimeEventTicketingApplication {
 
         // Create and start vendor threads
         for (int i = 1; i <= numberOfVendors; i++) {
-            Vendor vendor = new Vendor(config);
+            Vendor vendor = new Vendor(config, ticketPool);
             vendor.setVendorId(i);
             Thread thread = new Thread(vendor);
             vendorThreads.add(thread);
@@ -52,32 +48,31 @@ public class RealTimeEventTicketingApplication {
 
         // Create and start customer threads
         for (int i = 1; i <= numberOfCustomers; i++) {
-            Customer customer = new Customer(config);
+            Customer customer = new Customer(config, ticketPool);
             customer.setCustomerId(i);
             Thread thread = new Thread(customer);
             customerThreads.add(thread);
             thread.start();
         }
 
-        // Wait for threads to finish
+        // Wait for vendor threads to complete
         for (Thread thread : vendorThreads) {
             try {
                 thread.join();
             } catch (InterruptedException e) {
-                System.out.println("Vendor thread interrupted: " + e.getMessage());
+                System.err.println("Vendor thread interrupted: " + e.getMessage());
             }
         }
+
+        // Wait for customer threads to complete
         for (Thread thread : customerThreads) {
             try {
                 thread.join();
             } catch (InterruptedException e) {
-                System.out.println("Customer thread interrupted: " + e.getMessage());
+                System.err.println("Customer thread interrupted: " + e.getMessage());
             }
         }
 
         System.out.println("Simulation complete!");
-        SpringApplication.run(RealTimeEventTicketingApplication.class, args);
     }
-
-
 }
