@@ -27,11 +27,8 @@ public class ConfigurationController {
         config.setSessionId(++ConfigService.sessionId);
         configService.saveToFile(config);
         System.out.println("Session Id"+ConfigService.sessionId+" added");
-        Configuration configuration = new Configuration(config.getTotalTickets(),
-                                                        config.getTicketReleaseRate(),
-                                                        config.getTicketsRetrievalRate(),
-                                                        config.getMaxPoolCapacity());
     }
+
     @GetMapping("/getAllConfigs")
     public List<Config> getAllConfigurations() {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -48,6 +45,7 @@ public class ConfigurationController {
 
         return configList;
     }
+
     @DeleteMapping("/clearConfigs")
     public String deleteAllConfigurations() {
         File file = new File("config.json");
@@ -60,6 +58,7 @@ public class ConfigurationController {
             return "deleteAll:failed: " + e.getMessage();
         }
     }
+
     @GetMapping("/{id}")
     public Object getConfigById(@PathVariable("id") Integer sessionId) {
         ObjectMapper objectMapper = new ObjectMapper();
