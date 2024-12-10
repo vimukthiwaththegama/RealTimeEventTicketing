@@ -25,15 +25,15 @@ public class CustomerController {
 
     }
     @DeleteMapping("/clearCustomers")
-    public String  clearCustomers() {
+    public static void  clearCustomers() {
         File file = new File("customer.json");
         ObjectMapper objectMapper = new ObjectMapper();
 
         try (FileWriter writer = new FileWriter(file)) {
             objectMapper.writeValue(writer, new Object[]{});
-            return "deleted:All customers";
+            System.out.println("deleted:All customers");
         } catch (IOException e) {
-            return "deleteAll:failed: " + e.getMessage();
+            System.out.println("deleteAll:failed:");
         }
     }
 }

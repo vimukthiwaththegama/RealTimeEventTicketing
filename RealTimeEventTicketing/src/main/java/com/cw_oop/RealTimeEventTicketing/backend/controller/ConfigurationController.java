@@ -2,7 +2,6 @@ package com.cw_oop.RealTimeEventTicketing.backend.controller;
 
 import com.cw_oop.RealTimeEventTicketing.backend.entity.Config;
 import com.cw_oop.RealTimeEventTicketing.backend.service.ConfigService;
-import com.cw_oop.RealTimeEventTicketing.cli.Configuration;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,15 +46,15 @@ public class ConfigurationController {
     }
 
     @DeleteMapping("/clearConfigs")
-    public String deleteAllConfigurations() {
+    public static void deleteAllConfigurations() {
         File file = new File("config.json");
         ObjectMapper objectMapper = new ObjectMapper();
 
         try (FileWriter writer = new FileWriter(file)) {
             objectMapper.writeValue(writer, new Object[]{});
-            return "deleted:All configurations";
+            System.out.println("deleted:All configurations");
         } catch (IOException e) {
-            return "deleteAll:failed: " + e.getMessage();
+            System.out.println("failed");
         }
     }
 

@@ -23,6 +23,8 @@ import java.util.Optional;
 @RestController
 @RequestMapping("api/v1/execute")
 public class ExecuteController {
+    Boolean isStopped = true;
+
     @PostMapping("/{id}")
     public void start(@PathVariable("id") Integer sessionId) {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -61,6 +63,9 @@ public class ExecuteController {
                 Thread thread = new Thread(vendor);
                 vendorThreads.add(thread);
                 thread.start();
+                if(!isStopped){
+                    break;
+                }
             }
 
             for (int i = 1; i <= CustomerService.customerId; i++) {
@@ -69,6 +74,9 @@ public class ExecuteController {
                 Thread thread = new Thread(customer);
                 customerThreads.add(thread);
                 thread.start();
+                if(!isStopped){
+                    break;
+                }
             }
 
             for (Thread thread : vendorThreads) {
@@ -94,6 +102,14 @@ public class ExecuteController {
 
         System.out.println("Buying and Selling part has done!");
 
+    }
+    @PostMapping("/stop")
+    public Boolean stop() {
+        ConfigurationController.deleteAllConfigurations();
+        VendorController.clearVendors();
+        CustomerController.clearCustomers();
+
+        return isStopped=false;
     }
     }
 

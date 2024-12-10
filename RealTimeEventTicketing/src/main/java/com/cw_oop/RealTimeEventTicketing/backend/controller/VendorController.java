@@ -23,15 +23,15 @@ public class VendorController {
 
     }
     @DeleteMapping("/clearVendors")
-    public String  clearVendors() {
+    public static void  clearVendors() {
         File file = new File("vendor.json");
         ObjectMapper objectMapper = new ObjectMapper();
 
         try (FileWriter writer = new FileWriter(file)) {
             objectMapper.writeValue(writer, new Object[]{});
-            return "deleted:All vendors";
+            System.out.println("deleted:All vendors");;
         } catch (IOException e) {
-            return "deleteAll:failed: " + e.getMessage();
+            System.out.println("deleteAll:failed: ");
         }
     }
 }
