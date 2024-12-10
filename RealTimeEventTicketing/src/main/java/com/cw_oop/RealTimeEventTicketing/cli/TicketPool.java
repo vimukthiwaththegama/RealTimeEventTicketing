@@ -2,14 +2,21 @@ package com.cw_oop.RealTimeEventTicketing.cli;
 
 import java.util.LinkedList;
 import java.util.logging.Logger;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class TicketPool {
         private static Integer totalNumberOfTickets;
         private static Integer maxTicketCapacity;
         private static final Logger logger = Logger.getLogger(TicketPool.class.getName());
-        public static LinkedList<Ticket> ticketPool = new LinkedList<>();
+    public static ConcurrentLinkedQueue<Ticket> ticketPool = new ConcurrentLinkedQueue<>();
 
-        private Integer ticketCount = 0;
+
+    private   Integer ticketCount = 0;
+        private   Integer ticketRetrieveCount=0;
+
+        public Integer getTicketRetrievingCount(){
+            return ticketRetrieveCount;
+        }
 
         public TicketPool(Integer totalNumberOfTickets, Integer maxTicketCapacity) {
             TicketPool.totalNumberOfTickets = totalNumberOfTickets;
@@ -29,7 +36,8 @@ public class TicketPool {
 
         ticket.setTicketId(++ticketCount);
         ticketPool.add(ticket);
-        logger.info("Ticket added to the ticket pool: Ticket ID " + ticket.getTicketId());
+        ticket.setTicketStatus(TicketStatus.RELEASED);
+        //logger.info("Ticket added to the ticket pool: Ticket ID " + ticket.getTicketId());
         notifyAll();
         return true;
     }
@@ -45,8 +53,10 @@ public class TicketPool {
                 wait();
             }
 
-            Ticket ticket = ticketPool.removeFirst();
-            logger.info("Ticket removed from ticket pool: Ticket ID " + ticket.getTicketId());
+            Ticket ticket = ticketPool.remove();
+            ticket.setTicketStatus(TicketStatus.SOLD);
+            ticketRetrieveCount++;
+            //logger.info("Ticket removed from ticket pool: Ticket ID " + ticket.getTicketId());
             notifyAll();
             return ticket;
         }

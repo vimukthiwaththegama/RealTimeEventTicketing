@@ -30,9 +30,11 @@ public class Customer implements Runnable {
                 logger.info("Customer " + customerId + " stopped as there are no more tickets.");
                 break;
             }
-            logger.info("Customer " + customerId + " retrieved Ticket ID: " + ticket.getTicketId());
+            logger.info("Customer " + customerId + " retrieved Ticket ID: " + ticket.getTicketId()+"-Ticket status is: "+ticket.getTicketStatus());
             try {
-                Thread.sleep(15000 / configuration.getTicketsRetrievalRate());
+                if(ticketPool.getTicketRetrievingCount()%configuration.getTicketsRetrievalRate()==0) {
+                    Thread.sleep(4000);
+                }
             } catch (InterruptedException e) {
                 logger.severe("Customer " + customerId + " interrupted: " + e.getMessage());
                 Thread.currentThread().interrupt();

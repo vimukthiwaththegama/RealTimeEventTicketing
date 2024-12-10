@@ -11,25 +11,44 @@ import java.util.List;
 import java.util.Scanner;
 public class RealTimeEventTicketingApplication {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        int totalTickets ;
+        int releaseRate ;
+        int retrievalRate ;
+        int maxCapacity ;
+        int numberOfVendors ;
+        int numberOfCustomers ;
 
-        System.out.println("Enter Total Number of Tickets:");
-        int totalTickets = scanner.nextInt();
+        while (true) {
+            Scanner scanner = new Scanner(System.in);
+            try {
+                System.out.println("Enter Total Number of Tickets:");
+                totalTickets = scanner.nextInt();
 
-        System.out.println("Enter Ticket Release Rate (tickets per minute):");
-        int releaseRate = scanner.nextInt();
+                System.out.println("Enter Ticket Release Rate (tickets per minute):");
+                releaseRate = scanner.nextInt();
 
-        System.out.println("Enter Ticket Retrieval Rate (tickets per minute):");
-        int retrievalRate = scanner.nextInt();
+                System.out.println("Enter Ticket Retrieval Rate (tickets per minute):");
+                retrievalRate = scanner.nextInt();
+                while(true) {
+                    System.out.println("Enter Max Capacity(It should be below or same amount as Total Number Of Tickets-" + totalTickets + "):");
+                    maxCapacity = scanner.nextInt();
+                    if(totalTickets>=maxCapacity) {
+                        break;
+                    }else {
+                        System.out.println("Max Capacity must be less than or equal to Total Number of Tickets."+"("+totalTickets+")"+ " Try again.");
+                    }
+                }
+                System.out.println("Enter Number of Vendors:");
+                numberOfVendors = scanner.nextInt();
 
-        System.out.println("Enter Max Capacity:");
-        int maxCapacity = scanner.nextInt();
-
-        System.out.println("Enter Number of Vendors:");
-        int numberOfVendors = scanner.nextInt();
-
-        System.out.println("Enter Number of Customers:");
-        int numberOfCustomers = scanner.nextInt();
+                System.out.println("Enter Number of Customers:");
+                numberOfCustomers = scanner.nextInt();
+            } catch (Exception e) {
+                System.out.println("Invalid Input.Enter again!");
+                continue;
+            }
+            break;
+        }
 
         Configuration config = new Configuration(totalTickets, releaseRate, retrievalRate, maxCapacity);
 

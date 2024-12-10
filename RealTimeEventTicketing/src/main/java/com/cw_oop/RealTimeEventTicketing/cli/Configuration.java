@@ -1,28 +1,28 @@
 package com.cw_oop.RealTimeEventTicketing.cli;
 
 public class Configuration {
-    private final Integer totalNumberOfTickets;
-    private final Integer ticketsReleaseRate;
-    private final Integer ticketsRetrievalRate;
-    private final Integer maxTicketCapacity;
+    private final int totalNumberOfTickets;
+    private final int ticketsReleaseRate;
+    private final int ticketsRetrievalRate;
+    private final int maxTicketCapacity;
 
-    public Integer getTotalNumberOfTickets() {
+    public int getTotalNumberOfTickets() {
         return totalNumberOfTickets;
     }
 
-    public Integer getTicketsReleaseRate() {
+    public int getTicketsReleaseRate() {
         return ticketsReleaseRate;
     }
 
-    public Integer getTicketsRetrievalRate() {
+    public int getTicketsRetrievalRate() {
         return ticketsRetrievalRate;
     }
 
-    public Integer getMaxTicketCapacity() {
+    public int getMaxTicketCapacity() {
         return maxTicketCapacity;
     }
 
-    public Configuration(Integer totalNumberOfTickets, Integer ticketsReleaseRate, Integer ticketsRetrievalRate, Integer maxTicketCapacity) {
+    public Configuration(int totalNumberOfTickets, int ticketsReleaseRate, int ticketsRetrievalRate, int maxTicketCapacity) {
         this.totalNumberOfTickets = totalNumberOfTickets;
         this.ticketsReleaseRate = ticketsReleaseRate;
         this.ticketsRetrievalRate = ticketsRetrievalRate;

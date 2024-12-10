@@ -32,10 +32,12 @@ public class Vendor implements Runnable {
                 logger.info("Vendor " + vendorId + " stopped as all tickets have been released.");
                 break;
             }
-            logger.info("Vendor " + vendorId + " released Ticket ID: " + ticket.getTicketId());
+            logger.info("Vendor " + vendorId + " released Ticket ID: " + ticket.getTicketId()+"-Ticket status is: "+ticket.getTicketStatus());
 
             try {
-                Thread.sleep(15000 / configuration.getTicketsReleaseRate());
+                if(ticket.getTicketId()%configuration.getTicketsReleaseRate()==0) {
+                    Thread.sleep(5000);
+                }
             } catch (InterruptedException e) {
                 logger.severe("Vendor " + vendorId + " interrupted: " + e.getMessage());
                 Thread.currentThread().interrupt();
