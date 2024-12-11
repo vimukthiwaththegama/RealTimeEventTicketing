@@ -1,6 +1,4 @@
 package com.cw_oop.RealTimeEventTicketing.cli;
-
-import java.util.LinkedList;
 import java.util.logging.Logger;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
