@@ -63,21 +63,18 @@ public class ExecuteController {
                 Thread thread = new Thread(vendor);
                 vendorThreads.add(thread);
                 thread.start();
-
             }
-
             for (int i = 1; i <= CustomerService.customerId; i++) {
                 Customer customer = new Customer(configuration, ticketPool);
                 customer.setCustomerId(i);
                 Thread thread = new Thread(customer);
                 customerThreads.add(thread);
                 thread.start();
-
             }
 
             for (Thread thread : vendorThreads) {
-                if(!isStopped){
-                    break;
+                if(isStopped){
+                    return;
                 }
                 try {
                     thread.join();
@@ -87,8 +84,8 @@ public class ExecuteController {
             }
 
             for (Thread thread : customerThreads) {
-                if(!isStopped){
-                    break;
+                if(isStopped){
+                    return;
                 }
                 try {
                     thread.join();
