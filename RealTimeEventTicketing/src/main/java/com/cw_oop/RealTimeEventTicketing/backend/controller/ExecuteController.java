@@ -9,10 +9,7 @@ import com.cw_oop.RealTimeEventTicketing.cli.TicketPool;
 import com.cw_oop.RealTimeEventTicketing.cli.Vendor;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +21,7 @@ import java.util.Optional;
 @RequestMapping("api/v1/execute")
 public class ExecuteController {
     public static Boolean isStopped=true;
-
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/{id}")
     public void start(@PathVariable("id") Integer sessionId) {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -102,6 +99,7 @@ public class ExecuteController {
         System.out.println("Buying and Selling part has done!");
 
     }
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/stop")
     public Boolean stop() {
         ConfigurationController.deleteAllConfigurations();

@@ -17,13 +17,15 @@ import java.io.IOException;
 public class CustomerController {
     @Autowired
     private CustomerService customerService;
-
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/addCustomer")
     public void setCustomer(@RequestBody CustomerInfo customerInfo) {
         customerInfo.setCustomerId(++CustomerService.customerId);
+        System.out.println(customerInfo.getTotalTicketsBuy());
         customerService.saveToFile(customerInfo);
 
     }
+    @CrossOrigin(origins = "http://localhost:3000")
     @DeleteMapping("/clearCustomers")
     public static void  clearCustomers() {
         File file = new File("customer.json");

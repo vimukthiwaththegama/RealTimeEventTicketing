@@ -15,13 +15,14 @@ import java.io.IOException;
 public class VendorController {
     @Autowired
     private VendorService vendorService;
-
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/addVendor")
     public void setVendor(@RequestBody VendorInfo vendorInfo) {
         vendorInfo.setVendorId(++VendorService.vendorId);
         vendorService.saveToFile(vendorInfo);
 
     }
+    @CrossOrigin(origins = "http://localhost:3000")
     @DeleteMapping("/clearVendors")
     public static void  clearVendors() {
         File file = new File("vendor.json");

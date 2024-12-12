@@ -21,13 +21,14 @@ public class ConfigurationController {
     @Autowired
     private ConfigService configService;
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/addConfig")
     public void setConfiguration(@RequestBody Config config) {
         config.setSessionId(++ConfigService.sessionId);
         configService.saveToFile(config);
         System.out.println("Session Id"+ConfigService.sessionId+" added");
     }
-
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/getAllConfigs")
     public List<Config> getAllConfigurations() {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -44,7 +45,7 @@ public class ConfigurationController {
 
         return configList;
     }
-
+    @CrossOrigin(origins = "http://localhost:3000")
     @DeleteMapping("/clearConfigs")
     public static void deleteAllConfigurations() {
         File file = new File("config.json");
@@ -57,7 +58,7 @@ public class ConfigurationController {
             System.out.println("failed");
         }
     }
-
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/{id}")
     public Object getConfigById(@PathVariable("id") Integer sessionId) {
         ObjectMapper objectMapper = new ObjectMapper();
