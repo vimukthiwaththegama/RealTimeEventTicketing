@@ -79,7 +79,3 @@ This project is for following users:
 - Event Admin(Event Manager/Application Admin)
 
 
-# Real Time Event Ticketing Application
-
-This project is real time ticket releasing and tickets retrieving application.This enables to do buying and selling process concurrently.The architecture is Producer-Consumer architecture.
-
