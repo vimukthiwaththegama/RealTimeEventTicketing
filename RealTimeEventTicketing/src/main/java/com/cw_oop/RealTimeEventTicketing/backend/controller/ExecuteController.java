@@ -11,8 +11,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -107,6 +109,36 @@ public class ExecuteController {
         CustomerController.clearCustomers();
 
         return isStopped=false;
+    }
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/getLogs")
+    public String getLogs(@RequestParam String command) {
+        StringBuilder logs = new StringBuilder();
+
+        try {
+            // Execute terminal command
+            Process process = Runtime.getRuntime().exec(command);
+
+            // Read output
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    logs.append(line).append("\n");
+                }
+            }
+
+            // Check for errors
+            try (BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
+                String line;
+                while ((line = errorReader.readLine()) != null) {
+                    logs.append("ERROR: ").append(line).append("\n");
+                }
+            }
+        } catch (Exception e) {
+            logs.append("Exception occurred: ").append(e.getMessage());
+        }
+
+        return logs.toString();
     }
     }
 
