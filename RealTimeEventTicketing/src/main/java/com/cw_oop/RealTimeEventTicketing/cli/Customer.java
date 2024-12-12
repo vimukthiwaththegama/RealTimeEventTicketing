@@ -1,5 +1,7 @@
 package com.cw_oop.RealTimeEventTicketing.cli;
 
+import com.cw_oop.RealTimeEventTicketing.backend.service.LogCollector;
+
 import java.util.logging.Logger;
 
 public class Customer implements Runnable {
@@ -28,15 +30,18 @@ public class Customer implements Runnable {
             }
             if (ticket == null) {
                 logger.info("Customer " + customerId + " stopped as there are no more tickets.");
+                LogCollector.addLog("Customer " + customerId + " stopped as there are no more tickets.");
                 break;
             }
             logger.info("Customer " + customerId + " retrieved Ticket ID: " + ticket.getTicketId()+"-Ticket status is: "+ticket.getTicketStatus());
+            LogCollector.addLog("Customer " + customerId + " retrieved Ticket ID: " + ticket.getTicketId()+"-Ticket status is: "+ticket.getTicketStatus());
             try {
                 if(ticketPool.getTicketRetrievingCount()%configuration.getTicketsRetrievalRate()==0) {
                     Thread.sleep(4000);
                 }
             } catch (InterruptedException e) {
                 logger.severe("Customer " + customerId + " interrupted: " + e.getMessage());
+                LogCollector.addLog("Customer " + customerId + " interrupted: " + e.getMessage());
                 Thread.currentThread().interrupt();
             }
         }

@@ -2,6 +2,7 @@ package com.cw_oop.RealTimeEventTicketing.backend.controller;
 
 import com.cw_oop.RealTimeEventTicketing.backend.entity.Config;
 import com.cw_oop.RealTimeEventTicketing.backend.service.CustomerService;
+import com.cw_oop.RealTimeEventTicketing.backend.service.LogCollector;
 import com.cw_oop.RealTimeEventTicketing.backend.service.VendorService;
 import com.cw_oop.RealTimeEventTicketing.cli.Configuration;
 import com.cw_oop.RealTimeEventTicketing.cli.Customer;
@@ -9,12 +10,15 @@ import com.cw_oop.RealTimeEventTicketing.cli.TicketPool;
 import com.cw_oop.RealTimeEventTicketing.cli.Vendor;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +26,8 @@ import java.util.Optional;
 @RestController
 @RequestMapping("api/v1/execute")
 public class ExecuteController {
+    @Autowired
+    private LogCollector logCollector;
     public static Boolean isStopped=true;
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/{id}")
@@ -110,35 +116,10 @@ public class ExecuteController {
 
         return isStopped=false;
     }
-    @CrossOrigin(origins = "http://localhost:3000")
-    @GetMapping("/getLogs")
-    public String getLogs(@RequestParam String command) {
-        StringBuilder logs = new StringBuilder();
 
-        try {
-            // Execute terminal command
-            Process process = Runtime.getRuntime().exec(command);
-
-            // Read output
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    logs.append(line).append("\n");
-                }
-            }
-
-            // Check for errors
-            try (BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
-                String line;
-                while ((line = errorReader.readLine()) != null) {
-                    logs.append("ERROR: ").append(line).append("\n");
-                }
-            }
-        } catch (Exception e) {
-            logs.append("Exception occurred: ").append(e.getMessage());
-        }
-
-        return logs.toString();
+    @GetMapping("/logs")
+    public List<String> getRuntimeLogs() {
+        return logCollector.getLogs();
     }
     }
 

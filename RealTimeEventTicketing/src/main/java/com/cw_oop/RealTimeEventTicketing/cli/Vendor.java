@@ -1,6 +1,8 @@
 
 package com.cw_oop.RealTimeEventTicketing.cli;
 
+import com.cw_oop.RealTimeEventTicketing.backend.service.LogCollector;
+
 import java.util.logging.Logger;
 
 public class Vendor implements Runnable {
@@ -30,9 +32,11 @@ public class Vendor implements Runnable {
             }
             if (!added) {
                 logger.info("Vendor " + vendorId + " stopped as all tickets have been released.");
+                LogCollector.addLog("Vendor " + vendorId + " stopped as all tickets have been released.");
                 break;
             }
             logger.info("Vendor " + vendorId + " released Ticket ID: " + ticket.getTicketId()+"-Ticket status is: "+ticket.getTicketStatus());
+            LogCollector.addLog("Vendor " + vendorId + " released Ticket ID: " + ticket.getTicketId()+"-Ticket status is: "+ticket.getTicketStatus());
 
             try {
                 if(ticket.getTicketId()%configuration.getTicketsReleaseRate()==0) {
@@ -40,6 +44,7 @@ public class Vendor implements Runnable {
                 }
             } catch (InterruptedException e) {
                 logger.severe("Vendor " + vendorId + " interrupted: " + e.getMessage());
+                LogCollector.addLog("Vendor " + vendorId + " interrupted: " + e.getMessage());
                 Thread.currentThread().interrupt();
             }
         }

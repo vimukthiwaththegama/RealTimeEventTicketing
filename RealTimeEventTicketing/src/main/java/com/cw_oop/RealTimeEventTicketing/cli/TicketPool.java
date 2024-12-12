@@ -1,4 +1,6 @@
 package com.cw_oop.RealTimeEventTicketing.cli;
+import com.cw_oop.RealTimeEventTicketing.backend.service.LogCollector;
+
 import java.util.logging.Logger;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -24,11 +26,13 @@ public class TicketPool {
     public synchronized Boolean addTicket(Ticket ticket) throws InterruptedException {
         while (ticketPool.size() >= maxTicketCapacity) {
             logger.warning("Ticket pool is full. Vendor waiting...");
+            LogCollector.addLog("Ticket pool is full. Vendor waiting...");
             wait();
         }
 
         if (ticketCount >= totalNumberOfTickets) {
             logger.info("All tickets have been released.");
+            LogCollector.addLog("All tickets have been released.");
             return false;
         }
 
@@ -45,9 +49,11 @@ public class TicketPool {
             while (ticketPool.isEmpty()) {
                 if (ticketCount >= totalNumberOfTickets) {
                     logger.info("No more tickets to retrieve. Customer waiting stopped.");
+                    LogCollector.addLog("No more tickets to retrieve. Customer waiting stopped.");
                     return null;
                 }
                 logger.warning("Ticket pool is empty. Customer waiting...");
+                LogCollector.addLog("Ticket pool is empty. Customer waiting...");
                 wait();
             }
 
